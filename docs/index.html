@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Some-bunny is turning ONE! | Birthday Invite</title>
+<meta name="description" content="You're invited to a little bunny's first birthday! Details, RSVP and a tiny game inside.">
+<meta name="theme-color" content="#FFD6E4">
+<meta property="og:title" content="Some-bunny is turning ONE! 🐰">
+<meta property="og:description" content="Hop on over to our little bunny's first birthday. Details + RSVP inside.">
+<meta property="og:type" content="website">
+<!-- After publishing, add: <meta property="og:image" content="https://YOUR-USER.github.io/REPO/og.png"> (1200x630 png) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%B0%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="bunny" viewBox="0 0 120 150">
+      <ellipse cx="38" cy="38" rx="14" ry="36" fill="#fff" stroke="#F7A3C0" stroke-width="3"/>
+      <ellipse cx="38" cy="40" rx="6.5" ry="26" fill="#FFC2D6"/>
+      <ellipse cx="82" cy="38" rx="14" ry="36" fill="#fff" stroke="#F7A3C0" stroke-width="3" transform="rotate(8 82 38)"/>
+      <ellipse cx="82" cy="40" rx="6.5" ry="26" fill="#FFC2D6" transform="rotate(8 82 38)"/>
+      <ellipse cx="60" cy="100" rx="42" ry="40" fill="#fff" stroke="#F7A3C0" stroke-width="3"/>
+      <circle cx="44" cy="96" r="5" fill="#7A3E5C"/><circle cx="76" cy="96" r="5" fill="#7A3E5C"/>
+      <circle cx="45.8" cy="94" r="1.6" fill="#fff"/><circle cx="77.8" cy="94" r="1.6" fill="#fff"/>
+      <ellipse cx="33" cy="108" rx="8" ry="5" fill="#FFC2D6" opacity=".8"/><ellipse cx="87" cy="108" rx="8" ry="5" fill="#FFC2D6" opacity=".8"/>
+      <path d="M54 106 q6 7 12 0 q-6 -4 -12 0z" fill="#F7A3C0"/>
+      <path d="M60 111 v4 M60 115 q-5 5 -10 1 M60 115 q5 5 10 1" fill="none" stroke="#7A3E5C" stroke-width="2.2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21s-8-5.2-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.8-8 11-8 11z" fill="currentColor"/></symbol>
+    <symbol id="star" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" fill="currentColor"/></symbol>
+    <symbol id="flower" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="12" cy="5.5" r="4.2"/><circle cx="18.5" cy="10.5" r="4.2"/><circle cx="16" cy="18" r="4.2"/><circle cx="8" cy="18" r="4.2"/><circle cx="5.5" cy="10.5" r="4.2"/></g><circle cx="12" cy="12" r="3.4" fill="#FFE08A"/></symbol>
+    <symbol id="pin" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" fill="currentColor"/></symbol>
+    <symbol id="cal" viewBox="0 0 24 24"><path d="M7 2v3M17 2v3M3.5 9h17M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19V6A1.5 1.5 0 0 1 5 4.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="floaties" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<main>
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="bunting" id="bunting" aria-hidden="true"></div>
+    <div class="cloud c1" aria-hidden="true"></div><div class="cloud c2" aria-hidden="true"></div><div class="cloud c3" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <p class="kicker">You're invited to</p>
+      <h1 id="headline">Some-bunny is turning ONE!</h1>
+
+      <div class="intro">
+        <div class="scene scene-wave" id="sceneWave" aria-hidden="true"></div>
+        <div class="intro-text">
+          <div class="badge-one" aria-label="First birthday"><span>1</span><small>st</small></div>
+          <p class="child-name" id="childName"></p>
+        </div>
+      </div>
+
+      <!-- GAME: front and centre, like a doodle -->
+      <div class="game-wrap" id="play">
+        <button class="fun-btn" type="button" id="funBtn" aria-expanded="false" aria-controls="gameBody">
+          <svg viewBox="0 0 120 150" aria-hidden="true"><use href="#bunny"/></svg>
+          <span><b>Want to have some fun?</b><small>Tap to play Bunny Catch!</small></span>
+          <i aria-hidden="true">▾</i>
+        </button>
+        <div class="game-body" id="gameBody" aria-hidden="true"><div class="game-inner">
+        <div class="game" id="game">
+          <canvas id="gameCanvas" width="360" height="480" aria-label="Bunny Catch game"></canvas>
+          <div class="overlay idle" id="overlay">
+            <h3 id="ovTitle">Bunny Catch</h3>
+            <p id="ovText">Slide the bunny to catch carrots and hearts. Dodge the grumpy clouds!</p>
+            <button class="fab" type="button" id="startBtn" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span id="startLabel">Play</span></button>
+            <a class="btn ghost" id="ovRsvp" href="#rsvp" hidden>RSVP now</a>
+          </div>
+          <div class="hud">
+            <span>Score <b id="score">0</b></span>
+            <span>Best <b id="best">0</b></span>
+            <span>Time <b id="time">30</b></span>
+            <button type="button" id="mute" class="mute" aria-pressed="false" aria-label="Sound off">🔇</button>
+          </div>
+        </div>
+        <button class="link fold" type="button" id="foldBtn">Fold the game away</button>
+        </div></div>
+        <p class="psst">Psst... 5 tiny bunnies are hiding on this page. Can you find them all?</p>
+      </div>
+
+      <div class="scene scene-hop" id="sceneHop" aria-hidden="true"></div>
+      <p class="subline" id="subline"></p>
+      <div class="date-pill" id="datePill"></div>
+      <div class="countdown" id="countdown" aria-live="off"></div>
+      <a class="btn" href="#rsvp">RSVP now</a>
+    </div>
+  </header>
+
+  <div class="scallop" aria-hidden="true"></div>
+
+  <!-- DETAILS: one card -->
+  <section class="section" id="details">
+    <h2>The party details</h2>
+    <article class="ticket">
+      <div class="stripe" aria-hidden="true"></div>
+      <div class="trow">
+        <svg class="ico c-rose"><use href="#cal"/></svg>
+        <div>
+          <h3>When</h3>
+          <p id="whenText"></p>
+          <button class="link" type="button" id="calBtn">Add to calendar</button>
+        </div>
+      </div>
+      <div class="trow">
+        <svg class="ico c-lav"><use href="#pin"/></svg>
+        <div>
+          <h3>Where</h3>
+          <p id="whereText"></p>
+          <a class="link" id="mapLink" target="_blank" rel="noopener" hidden>Open in Maps</a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- GROWING UP quote -->
+  <section class="section growing" id="growing">
+    <p class="quote-from" id="quoteFrom"></p>
+    <div class="stages" aria-hidden="true">
+      <div class="stage s1"><div class="scene" id="stageSleep"></div><span>Snuggles</span></div>
+      <svg class="arrow" viewBox="0 0 24 24"><path d="M6 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="stage s2"><div class="scene" id="stageHop"></div><span>Hops</span></div>
+      <svg class="arrow" viewBox="0 0 24 24"><path d="M6 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="stage s3"><div class="scene" id="stageRun"></div><span>Zoomies</span></div>
+    </div>
+    <p class="quote-to" id="quoteTo"></p>
+  </section>
+
+  <div class="scallop flip" aria-hidden="true"></div>
+
+  <!-- RSVP -->
+  <section class="section" id="rsvp">
+    <h2>Will you hop over?</h2>
+    <p class="lead">Please RSVP by <b id="rsvpBy"></b>. Add an email and/or phone so we can send reminders.</p>
+    <div class="thanks closed" id="closed" hidden>
+      <div class="scene scene-thanks" id="sceneClosed"></div>
+      <h3>RSVPs are now closed</h3>
+      <p id="closedText"></p>
+    </div>
+    <form id="rsvpForm" class="form" novalidate>
+      <div class="field">
+        <label for="name">Your name *</label>
+        <input id="name" name="name" type="text" autocomplete="name" maxlength="80" required>
+      </div>
+      <fieldset class="field choice">
+        <legend>Can you make it? *</legend>
+        <label><input type="radio" name="attending" value="yes" checked><span>Yes, we'll hop in!</span></label>
+        <label><input type="radio" name="attending" value="maybe"><span>Maybe</span></label>
+        <label><input type="radio" name="attending" value="no"><span>Can't make it</span></label>
+      </fieldset>
+      <div class="row" id="countRow">
+        <div class="field"><label for="adults">Adults</label><input id="adults" name="adults" type="number" inputmode="numeric" min="0" max="10" value="1"></div>
+        <div class="field"><label for="kids">Kids</label><input id="kids" name="kids" type="number" inputmode="numeric" min="0" max="10" value="0"></div>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="120" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="phone">Phone / WhatsApp</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="25" placeholder="+1 555 123 4567">
+        <small>Add an email or a phone (or both).</small>
+      </div>
+      <div class="field">
+        <label for="notes">Allergies, notes or a message for the bunny</label>
+        <textarea id="notes" name="notes" rows="3" maxlength="400"></textarea>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="error" id="formError" role="alert" hidden></p>
+      <button class="btn big" type="submit" id="submitBtn">Send RSVP</button>
+    </form>
+
+    <div class="thanks" id="thanks" hidden>
+      <div class="scene scene-thanks" id="sceneThanks"></div>
+      <h3 id="thanksTitle">Hop, hop, hooray!</h3>
+      <p id="thanksText"></p>
+      <button class="link" type="button" id="editAgain">Change my RSVP</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="hills" aria-hidden="true"></div>
+    <p id="footerHost"></p>
+    <p class="tiny">Made with <svg class="inline-heart"><use href="#heart"/></svg> for one very small bunny</p>
+  </footer>
+</main>
+
+<div class="finder" id="finder" hidden title="Tiny bunnies hiding on the page">
+  <svg viewBox="0 0 120 150" aria-hidden="true"><use href="#bunny"/></svg>
+  <span>Bunny hunt <b id="foundCount">0</b>/5</span>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
