@@ -128,6 +128,7 @@ function doPost(e) {
     else sh.appendRow(record);
 
     if (email) sendConfirmation_(name, email, attending);
+    notifyHosts_({ name: name, attending: attending, adults: adults, kids: kids, email: email, phone: phone, notes: notes }, rowIdx > 0);
     return json_({ ok: true });
   } catch (err) {
     console.error(err);
@@ -166,6 +167,50 @@ function sendConfirmation_(name, email, attending) {
   }
   mail_(email, 'RSVP received: ' + CONFIG.CHILD_NAME + "'s 1st birthday",
     wrap_('<h2>Hop, hop, hooray, ' + name + '!</h2><p>We got your RSVP (' + attending + ') for ' + CONFIG.CHILD_NAME + "'s 1st birthday.</p>" + details_()));
+}
+
+// ---------------- Alerts to the hosts when an RSVP arrives ----------------
+// Recipients: the sheet owner always, plus any extra addresses saved with
+// "Party Tools > Set who gets new-RSVP alerts" (kept in Script Properties, not in the code).
+function esc_(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function alertEmails_() {
+  var extra = (PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAILS') || '').split(',');
+  var all = [];
+  [Session.getEffectiveUser().getEmail()].concat(extra).forEach(function (e) {
+    e = String(e || '').trim().toLowerCase();
+    if (e && all.indexOf(e) < 0) all.push(e);
+  });
+  return all;
+}
+function notifyHosts_(g, isUpdate) {
+  try {
+    var to = alertEmails_();
+    if (!to.length) return;
+    var rows = sheet_().getDataRange().getValues().slice(1), s = { yes: 0, maybe: 0, no: 0, people: 0 };
+    rows.forEach(function (r) {
+      if (s[r[COL.attending]] !== undefined) s[r[COL.attending]]++;
+      if (r[COL.attending] === 'yes') s.people += Number(r[COL.adults]) + Number(r[COL.kids]);
+    });
+    var label = { yes: 'Yes', maybe: 'Maybe', no: "Can't make it" }[g.attending];
+    var body = '<div style="font-family:Arial,sans-serif;max-width:480px">' +
+      '<h3>' + (isUpdate ? 'Updated RSVP' : 'New RSVP') + ': ' + esc_(g.name) + ' (' + label + ')</h3>' +
+      '<p>' + (g.attending === 'no' ? '' : g.adults + ' adult(s), ' + g.kids + ' kid(s)<br>') +
+      (g.email ? 'Email: ' + esc_(g.email) + '<br>' : '') + (g.phone ? 'Phone: ' + esc_(g.phone) + '<br>' : '') +
+      (g.notes ? 'Notes: ' + esc_(g.notes) : '') + '</p>' +
+      '<p><b>Totals so far:</b> Yes ' + s.yes + ' (' + s.people + ' people), Maybe ' + s.maybe + ', No ' + s.no + '</p>' +
+      '<p><a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">Open the RSVP sheet</a></p></div>';
+    MailApp.sendEmail({ to: to.join(','), subject: (isUpdate ? 'RSVP updated: ' : 'New RSVP: ') + g.name + ' - ' + label, htmlBody: body, name: CONFIG.CHILD_NAME + ' RSVP alerts' });
+  } catch (err) { console.error(err); }   // never let an alert failure block a guest's RSVP
+}
+function setAlertEmails() {
+  var ui = SpreadsheetApp.getUi();
+  var r = ui.prompt('New-RSVP alert emails',
+    'You always get alerts. Enter extra email addresses (for example your wife), separated by commas. Leave blank to clear the extras.', ui.ButtonSet.OK_CANCEL);
+  if (r.getSelectedButton() !== ui.Button.OK) return;
+  var list = r.getResponseText().split(',').map(function (x) { return x.trim(); })
+    .filter(function (x) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x); });
+  PropertiesService.getScriptProperties().setProperty('NOTIFY_EMAILS', list.join(','));
+  ui.alert('Alerts will now go to: ' + alertEmails_().join(', '));
 }
 
 // ---------------- Reminders ----------------
@@ -214,6 +259,7 @@ function sendReminders() {
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Party Tools')
     .addItem('Send me a test email (to myself only)', 'sendTestEmails')
+    .addItem('Set who gets new-RSVP alerts', 'setAlertEmails')
     .addItem('Send due reminders now', 'menuSendReminders')
     .addItem('Rebuild WhatsApp message links', 'rebuildLinks')
     .addItem('Set up daily reminder trigger', 'setupTriggers')
