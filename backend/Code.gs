@@ -169,6 +169,25 @@ function sendConfirmation_(name, email, attending) {
 }
 
 // ---------------- Reminders ----------------
+function reminderEmail_(name, tomorrow) {
+  return {
+    subject: tomorrow ? 'Tomorrow! ' + CONFIG.CHILD_NAME + "'s 1st birthday" : 'One week to go: ' + CONFIG.CHILD_NAME + "'s 1st birthday",
+    body: wrap_('<h2>Hi ' + name + '!</h2><p>' + (tomorrow ? 'Our little bunny turns ONE tomorrow and we can&#39;t wait to see you!' : 'Just one week until our little bunny turns ONE. Hop on over!') + '</p>' + details_())
+  };
+}
+
+// Sends one copy of each email type to YOUR OWN address only. Touches no guest rows.
+function sendTestEmails() {
+  var me = Session.getEffectiveUser().getEmail();
+  if (!me) { SpreadsheetApp.getUi().alert('Could not find your email address.'); return; }
+  var a = reminderEmail_('Test Guest', false), b = reminderEmail_('Test Guest', true);
+  mail_(me, '[TEST] RSVP received: ' + CONFIG.CHILD_NAME + "'s 1st birthday",
+    wrap_('<h2>Hop, hop, hooray, Test Guest!</h2><p>We got your RSVP (yes) for ' + CONFIG.CHILD_NAME + "'s 1st birthday.</p>" + details_()));
+  mail_(me, '[TEST] ' + a.subject, a.body);
+  mail_(me, '[TEST] ' + b.subject, b.body);
+  SpreadsheetApp.getUi().alert('Sent 3 test emails to ' + me + ' (confirmation, 1-week reminder, 1-day reminder). Check your inbox and spam folder.');
+}
+
 function sendReminders() {
   var days = (eventDate_().getTime() - Date.now()) / 86400000;
   if (days < 0) return;                                     // event is over
@@ -181,9 +200,8 @@ function sendReminders() {
     else if (days <= 7.5 && days > 1.5 && !r[COL.reminder7_sent]) which = 'reminder7_sent';
     if (!which) continue;
     if (MailApp.getRemainingDailyQuota() < 1) break;
-    var tomorrow = which === 'reminder1_sent';
-    mail_(email, tomorrow ? 'Tomorrow! ' + CONFIG.CHILD_NAME + "'s 1st birthday" : 'One week to go: ' + CONFIG.CHILD_NAME + "'s 1st birthday",
-      wrap_('<h2>Hi ' + r[COL.name] + '!</h2><p>' + (tomorrow ? 'Our little bunny turns ONE tomorrow and we can&#39;t wait to see you!' : 'Just one week until our little bunny turns ONE. Hop on over!') + '</p>' + details_()));
+    var rem = reminderEmail_(r[COL.name], which === 'reminder1_sent');
+    mail_(email, rem.subject, rem.body);
     sh.getRange(i + 1, COL[which] + 1).setValue(new Date());
     if (which === 'reminder1_sent') sh.getRange(i + 1, COL.reminder7_sent + 1).setValue(r[COL.reminder7_sent] || 'skipped');
     sent++;
@@ -195,6 +213,7 @@ function sendReminders() {
 // ---------------- Sheet menu & setup ----------------
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Party Tools')
+    .addItem('Send me a test email (to myself only)', 'sendTestEmails')
     .addItem('Send due reminders now', 'menuSendReminders')
     .addItem('Rebuild WhatsApp message links', 'rebuildLinks')
     .addItem('Set up daily reminder trigger', 'setupTriggers')
