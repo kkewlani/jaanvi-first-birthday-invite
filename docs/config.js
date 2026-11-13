@@ -31,5 +31,5 @@ window.PARTY = {
 
   // Paste the Apps Script Web App URL here after deploying backend/Code.gs.
   // While empty, the RSVP form runs in demo mode (nothing is saved).
-  apiUrl: "https://script.google.com/macros/s/AKfycbxCdyB233RTuAxwlp_HFr5lcDDQC1lottpMikf1DQtgDRUK2eWdkTi5InmsEQ1aext50Q/exec"
+  apiUrl: "https://script.google.com/macros/s/AKfycbxh3I5l6pCVEHsvObWuvccAKGX6MXQZJfev9Ha4gpH4cLemDB-d2vM-WGvWRacIHKpr/exec"
 };
