@@ -200,7 +200,7 @@
     var yes = d.attending === "yes", maybe = d.attending === "maybe";
     $("thanksTitle").textContent = yes ? "Hop, hop, hooray!" : maybe ? "Thanks, we'll keep a carrot for you!" : "We'll miss you!";
     $("thanksText").textContent = yes
-      ? "Thank you, " + d.name + "! We can't wait to see you." + (d.email ? " A confirmation is on its way to your inbox." : "")
+      ? "Thank you, " + d.name + "! We can't wait to see you." + (d.email ? " A confirmation is on its way from jaanvifirstbirthday@gmail.com. If you don't see it, please check your spam folder." : "")
       : maybe ? "Thank you, " + d.name + ". Just update your RSVP any time."
       : "Thank you for letting us know, " + d.name + ". We'll be thinking of you!";
     if (yes) window.confetti();
