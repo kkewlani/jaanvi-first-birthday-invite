@@ -282,9 +282,66 @@ function sendReminders() {
   return sent;
 }
 
+// ---------------- Custom message to guests (parking, room, schedule changes...) ----------------
+// Write the message on the "Message" tab, then Party Tools > Send message to guests.
+function messageSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet(), sh = ss.getSheetByName('Message');
+  if (!sh) {
+    sh = ss.insertSheet('Message');
+    sh.getRange('A1:A3').setValues([['Subject'], ['Message'], ['Send to']]).setFontWeight('bold');
+    sh.getRange('B3').setValue('Yes + Maybe').setDataValidation(
+      SpreadsheetApp.newDataValidation().requireValueInList(['Yes only', 'Yes + Maybe', 'Everyone who RSVPed'], true).build());
+    sh.getRange('A5').setValue('How to use').setFontWeight('bold');
+    sh.getRange('B5').setValue('Fill in the subject and message above, then choose Party Tools > Send message to guests. ' +
+      'Guests with an email get it by email. Guests with only a phone number get a ready-to-send WhatsApp link on the "Message links" tab.');
+    sh.setColumnWidth(1, 110); sh.setColumnWidth(2, 520);
+    sh.getRange('B1:B6').setWrap(true).setVerticalAlignment('top'); sh.setRowHeight(2, 160);
+  }
+  return sh;
+}
+function openMessageSheet() { SpreadsheetApp.setActiveSheet(messageSheet_()); }
+function sendCustomMessage() {
+  var ui = SpreadsheetApp.getUi(), sh = messageSheet_();
+  var subject = String(sh.getRange('B1').getValue()).trim(), text = String(sh.getRange('B2').getValue()).trim();
+  var aud = String(sh.getRange('B3').getValue()).trim();
+  if (!subject || !text) { ui.alert('Please fill in the Subject (B1) and Message (B2) on the "Message" tab first.'); SpreadsheetApp.setActiveSheet(sh); return; }
+  var okAtt = aud === 'Yes only' ? ['yes'] : aud === 'Everyone who RSVPed' ? ['yes', 'maybe', 'no'] : ['yes', 'maybe'];
+  var rows = sheet_().getDataRange().getValues().slice(1), emails = [], seen = {}, phones = [];
+  rows.forEach(function (r) {
+    if (okAtt.indexOf(r[COL.attending]) < 0) return;
+    var e = String(r[COL.email]).trim().toLowerCase(), p = normPhone_(r[COL.phone]);
+    if (e) { if (!seen[e]) { seen[e] = 1; emails.push({ name: r[COL.name], email: e }); } }
+    else if (p) phones.push({ name: r[COL.name], phone: p });
+  });
+  if (!emails.length && !phones.length) { ui.alert('No guests match "' + aud + '".'); return; }
+  var conf = ui.alert('Send this message?', 'Subject: ' + subject + '\n\n' + text + '\n\nTo: ' + aud +
+    '\nBy email: ' + emails.length + ' guest(s)\nPhone only (WhatsApp links): ' + phones.length + ' guest(s)', ui.ButtonSet.OK_CANCEL);
+  if (conf !== ui.Button.OK) return;
+  var sent = 0, failed = 0;
+  emails.forEach(function (g) {
+    if (MailApp.getRemainingDailyQuota() < 1) { failed++; return; }
+    try {
+      mail_(g.email, subject, wrap_('<h2>Hi ' + esc_(g.name) + '!</h2><p>' + esc_(text).replace(/\n/g, '<br>') + '</p>' + details_()));
+      sent++;
+    } catch (err) { failed++; console.error(err); }
+  });
+  var ss = SpreadsheetApp.getActiveSpreadsheet(), ls = ss.getSheetByName('Message links') || ss.insertSheet('Message links');
+  ls.clear();
+  ls.getRange(1, 1, 1, 3).setValues([['name', 'phone', 'whatsapp_link']]).setFontWeight('bold').setBackground('#FFD6E4');
+  if (phones.length) ls.getRange(2, 1, phones.length, 3).setValues(phones.map(function (g) {
+    return [g.name, g.phone, 'https://wa.me/' + g.phone + '?text=' + encodeURIComponent('Hi ' + g.name + '! ' + text)];
+  }));
+  sh.getRange('B6').setValue('Last sent: ' + new Date() + ' | "' + subject + '" | emailed ' + sent + (failed ? ' (' + failed + ' failed)' : '') + ' | WhatsApp links: ' + phones.length);
+  ui.alert('Done. Emailed ' + sent + ' guest(s)' + (failed ? ', ' + failed + ' failed' : '') + '.' +
+    (phones.length ? '\n\n' + phones.length + ' guest(s) have only a phone number. Open the "Message links" tab on your phone and tap each link to send it on WhatsApp.' : ''));
+}
+
 // ---------------- Sheet menu & setup ----------------
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Party Tools')
+    .addItem('Message guests: open the message page', 'openMessageSheet')
+    .addItem('Message guests: send it', 'sendCustomMessage')
+    .addSeparator()
     .addItem('Send me a test email (to myself only)', 'sendTestEmails')
     .addItem('Set who gets new-RSVP alerts', 'setAlertEmails')
     .addItem('Send a test alert now', 'sendTestAlert')
