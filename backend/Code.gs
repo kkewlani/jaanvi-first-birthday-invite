@@ -150,8 +150,16 @@ function doGet() {
 }
 
 // ---------------- Email ----------------
+// Plain-text twin of an HTML email (sent alongside it; spam filters score multipart mail better).
+function toText_(html) {
+  return String(html)
+    .replace(/<a [^>]*href="([^"]+)"[^>]*>([^<]*)<\/a>/g, '$2: $1')
+    .replace(/<\/(p|h[1-6]|div)>/g, '\n\n').replace(/<br\s*\/?>/g, '\n').replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/\n{3,}/g, '\n\n').trim();
+}
 function mail_(to, subject, body) {
-  MailApp.sendEmail({ to: to, subject: subject, htmlBody: body, name: CONFIG.SENDER_NAME });
+  MailApp.sendEmail({ to: to, subject: subject, body: toText_(body), htmlBody: body, name: CONFIG.SENDER_NAME });
 }
 function wrap_(inner) {
   return '<div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;border:3px dashed #FFC2D6;border-radius:20px;padding:24px;background:#FFF7FA;color:#7A3E5C">' +
@@ -201,7 +209,7 @@ function notifyHosts_(g, isUpdate) {
       (g.notes ? 'Notes: ' + esc_(g.notes) : '') + '</p>' +
       '<p><b>Totals so far:</b> Yes ' + s.yes + ' (' + s.people + ' people), Maybe ' + s.maybe + ', No ' + s.no + '</p>' +
       '<p><a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">Open the RSVP sheet</a></p></div>';
-    MailApp.sendEmail({ to: to.join(','), subject: (isUpdate ? 'RSVP updated: ' : 'New RSVP: ') + g.name + ' - ' + label, htmlBody: body, name: CONFIG.SENDER_NAME });
+    MailApp.sendEmail({ to: to.join(','), subject: (isUpdate ? 'RSVP updated: ' : 'New RSVP: ') + g.name + ' - ' + label, body: toText_(body), htmlBody: body, name: CONFIG.SENDER_NAME });
     props.setProperty('LAST_ALERT', new Date() + ' -> ' + to.join(', '));
     props.deleteProperty('LAST_ALERT_ERROR');
     return true;
