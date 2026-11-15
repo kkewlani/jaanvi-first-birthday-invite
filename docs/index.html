@@ -75,7 +75,7 @@
             <h3 id="ovTitle">Bunny Catch</h3>
             <p id="ovText">Slide the bunny to catch carrots and hearts. Dodge the grumpy clouds!</p>
             <button class="fab" type="button" id="startBtn" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span id="startLabel">Play</span></button>
-            <a class="btn ghost" id="ovRsvp" href="#rsvp" hidden>RSVP now</a>
+            <a class="btn ghost" id="ovRsvp" href="#rsvp" hidden><span class="lbl">RSVP now</span><small class="by">RSVP by <span class="by-date"></span></small></a>
           </div>
           <div class="hud">
             <span>Score <b id="score">0</b></span>
@@ -93,7 +93,7 @@
       <p class="subline" id="subline"></p>
       <div class="date-pill" id="datePill"></div>
       <div class="countdown" id="countdown" aria-live="off"></div>
-      <a class="btn" href="#rsvp">RSVP now</a>
+      <a class="btn" href="#rsvp"><span class="lbl">RSVP now</span><small class="by">RSVP by <span class="by-date"></span></small></a>
     </div>
   </header>
 
@@ -176,7 +176,7 @@
       </div>
       <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
       <p class="error" id="formError" role="alert" hidden></p>
-      <button class="btn big" type="submit" id="submitBtn">Send RSVP</button>
+      <button class="btn big" type="submit" id="submitBtn"><span class="lbl">Send RSVP</span><small class="by">RSVP by <span class="by-date"></span></small></button>
       <p class="mailnote">Confirmation and reminders come from jaanvifirstbirthday@gmail.com. Please check your spam folder if you don't see them.</p>
     </form>
 

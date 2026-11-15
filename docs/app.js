@@ -24,6 +24,7 @@
   $("whenText").textContent = fmtDate(start) + ", " + fmtTime(start) + " to " + fmtTime(end);
   $("whereText").textContent = (P.venueName ? P.venueName + " · " : "") + (P.address || "");
   $("rsvpBy").textContent = P.rsvpBy || "";
+  document.querySelectorAll(".by-date").forEach(function (el) { el.textContent = P.rsvpBy || ""; });
   $("footerHost").textContent = P.hostName ? "With love, " + P.hostName : "";
   document.title = (P.headline || "Birthday") + " | " + (P.childName || "Invite");
 
@@ -177,9 +178,9 @@
     if (d.phone && d.phone.replace(/\D/g, "").length < 7) return showErr("That phone number looks too short.");
     if (d.attending === "no") { d.adults = 0; d.kids = 0; }
 
-    btn.disabled = true; btn.textContent = "Sending...";
+    btn.disabled = true; btn.querySelector(".lbl").textContent = "Sending...";
     var done = function (ok, msg) {
-      btn.disabled = false; btn.textContent = "Send RSVP";
+      btn.disabled = false; btn.querySelector(".lbl").textContent = "Send RSVP";
       if (!ok) {
         var wa = waLink();
         showErr(msg || "We couldn't save that just now. Please try again" + (wa ? " or message us on WhatsApp." : "."));
@@ -190,7 +191,7 @@
     };
     if (!P.apiUrl) { console.info("Demo mode: apiUrl not set, nothing saved.", d); return setTimeout(function () { done(true); }, 500); }
     post(d, 1).then(function (r) {
-      if (r && r.closed) { btn.disabled = false; btn.textContent = "Send RSVP"; return showClosed(); }
+      if (r && r.closed) { btn.disabled = false; btn.querySelector(".lbl").textContent = "Send RSVP"; return showClosed(); }
       done(r && r.ok, r && !r.ok ? r.error : "");
     }).catch(function () { done(false); });
   });

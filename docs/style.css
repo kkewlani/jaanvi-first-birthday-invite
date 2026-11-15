@@ -217,3 +217,9 @@ input:focus,textarea:focus{border-color:var(--rose-d);background:#fff;box-shadow
 .closed .scene-thanks svg.bun{animation:breathe 3s ease-in-out infinite}
 
 .mailnote{margin:10px 0 0;text-align:center;font-size:.78rem;line-height:1.35;color:var(--berry-l)}
+
+/* RSVP-by date: small line on buttons, emphasised in the RSVP section */
+.btn{line-height:1.15}
+.btn .lbl{display:block}
+.btn .by{display:block;margin-top:2px;font-family:var(--body);font-size:.72rem;font-weight:700;letter-spacing:.02em;opacity:.95}
+.lead #rsvpBy{font-size:1.2em;font-weight:700;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px;text-decoration-color:var(--rose-d)}
