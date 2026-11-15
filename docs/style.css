@@ -216,4 +216,4 @@ input:focus,textarea:focus{border-color:var(--rose-d);background:#fff;box-shadow
 .fold{display:block;margin:6px auto 0;font-size:.9rem}
 .closed .scene-thanks svg.bun{animation:breathe 3s ease-in-out infinite}
 
-.mailnote{margin:8px 0 0;padding:10px 12px;background:var(--butter);border-radius:12px;font-size:.9rem;line-height:1.4}
+.mailnote{margin:10px 0 0;text-align:center;font-size:.78rem;line-height:1.35;color:var(--berry-l)}
